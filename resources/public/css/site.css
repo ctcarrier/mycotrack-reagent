@@ -32,3 +32,15 @@ div.image-tile div {
 div.image-tile div img {
   max-height: 100%;
 }
+
+table {
+  width: 100%;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+    padding: 15px;
+}

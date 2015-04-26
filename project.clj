@@ -46,7 +46,8 @@
                                         :output-dir    "resources/public/js/out"
                                         :asset-path   "js/out"
                                         :optimizations :none
-                                        :pretty-print  true}}}}
+                                        :pretty-print  true
+                                        :source-map true}}}}
 
   :profiles {:dev {:repl-options {:init-ns mycotrack-reagent.repl
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
@@ -70,6 +71,7 @@
                    :figwheel {:http-server-root "public"
                               :server-port 3449
                               :css-dirs ["resources/public/css"]
+                              :debug true
                               :ring-handler mycotrack-reagent.handler/app}
 
                    :env {:dev? true}
