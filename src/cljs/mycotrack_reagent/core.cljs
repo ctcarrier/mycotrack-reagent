@@ -11,7 +11,9 @@
             [clojure.set :refer [union]]
             [mycotrack-reagent.pages.projects-list-page :refer [projects-list-page refresh-projects]]
             [mycotrack-reagent.pages.species-list-page :refer [species-list-page refresh-species]]
-            [mycotrack-reagent.pages.species-detail-page :refer [species-detail-page refresh-cultures]])
+            [mycotrack-reagent.pages.species-detail-page :refer [species-detail-page refresh-cultures]]
+            [mycotrack-reagent.pages.new-project-page :refer [new-project-page]]
+            [mycotrack-reagent.channels :refer [echo-chan]])
   (:import goog.History))
 
 ;; -------------------------
@@ -37,6 +39,9 @@
 (secretary/defroute "/species" []
   (session/put! :current-page #'species-list-page))
 
+(secretary/defroute "/new_project" []
+  (session/put! :current-page #'new-project-page))
+
 (secretary/defroute "/species/:id" {:as params}
   (prn (str "Species coming in: " (:id params)))
   (session/put! :current-species (:id params))
@@ -55,8 +60,17 @@
 
 ;; -------------------------
 ;; Initialize app
+
+(defmulti redirect
+  (fn[x] x))
+
+;params is not used, so we could have used [_]
+(defmethod redirect "projects" [params]
+ (session/put! :current-page #'projects-list-page))
+
 (refresh-projects)
 (refresh-species)
+(go (redirect (<! echo-chan)))
 
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))
