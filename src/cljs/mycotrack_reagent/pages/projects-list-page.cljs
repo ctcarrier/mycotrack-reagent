@@ -19,7 +19,7 @@
 (defn refresh-projects []
   (go (let [response (<! (http/get "/api/projects" {:basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (= (:status response) 200 )
-      (swap! projects union (:body response))))))
+      (reset! projects (:body response))))))
 
 ;; -------------------------
 ;; Views
@@ -30,13 +30,17 @@
     [:tr
      [:th "Description"]
      [:th "Container"]
-     [:th "Substrate"]]
+     [:th "Substrate"]
+     [:th "Species"]
+     [:th "Culture"]]
     (for [project @projects]
      [:tr {:key (:_id project)}
       [:div.col-xs-12
         [:td (:description project)]
         [:td (:container project)]
-        [:td (:substrate project)]]])]]))
+        [:td (:substrate project)]
+        [:td (:speciesId project)]
+        [:td (:cultureId project)]]])]]))
 
 (defn save-project [value]
   (fn [] (go (let [response (<! (http/post "/api/projects" {:json-params @new-project :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
