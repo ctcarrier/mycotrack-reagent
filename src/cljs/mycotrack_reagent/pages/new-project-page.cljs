@@ -70,7 +70,7 @@
 (defn save-project [value]
   (fn [] (go (let [response (<! (http/post "/api/projects" {:json-params (:doc @state) :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (= (:status response) 201 )
-      (go (>! echo-chan "projects")))))))
+      (aset (.-location js/window) "href" "/"))))))
 
 (defn species-input []
   [:div.form-group
