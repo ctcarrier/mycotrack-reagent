@@ -20,6 +20,13 @@
 
 (def state (atom {:doc {:description "" :substrate "" :container "" :enabled true :species "" :culture ""} :saved? false}))
 
+(defn reset-all []
+  (reset! culture-list [])
+  (reset! species-list [])
+  (reset! selected-species "")
+  (reset! current-farm {})
+  (reset! state {:doc {:description "" :substrate "" :container "" :enabled true :species "" :culture ""} :saved? false}))
+
 (defn set-value! [id value]
   (swap! state assoc :saved? false)
   (swap! state assoc-in [:doc id] value))
@@ -70,6 +77,7 @@
 (defn save-project [value]
   (fn [] (go (let [response (<! (http/post "/api/projects" {:json-params (:doc @state) :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (= (:status response) 201 )
+      (reset-all)
       (aset (.-location js/window) "href" "/"))))))
 
 (defn species-input []
