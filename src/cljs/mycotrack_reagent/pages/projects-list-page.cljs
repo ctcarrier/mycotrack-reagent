@@ -17,6 +17,11 @@
 
 ;; Init data
 (defn refresh-projects []
+  (prn (str (session/get :cultureId)))
+  (prn (str (session/get :containerId)))
+  (prn (str
+    (when (not (clojure.string/blank? (session/get :cultureId))) (str "cultureId=" (session/get :cultureId)))
+    (when (not (clojure.string/blank? (session/get :containerId))) (str "&containerId=" (session/get :containerId)))))
   (go (let [response (<! (http/get "/api/projects" {:basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (= (:status response) 200 )
       (reset! projects (:body response))))))

@@ -18,14 +18,14 @@
 (def selected-species (atom ""))
 (def current-farm (atom {}))
 
-(def state (atom {:doc {:description "" :substrate "" :container "" :enabled true :species "" :culture ""} :saved? false}))
+(def state (atom {:doc {:description "" :substrate "" :container "" :enabled true :species "" :culture "" :count 1} :saved? false}))
 
 (defn reset-all []
   (reset! culture-list [])
   (reset! species-list [])
   (reset! selected-species "")
   (reset! current-farm {})
-  (reset! state {:doc {:description "" :substrate "" :container "" :enabled true :species "" :culture ""} :saved? false}))
+  (reset! state {:doc {:description "" :substrate "" :container "" :enabled true :species "" :culture "" :count 1} :saved? false}))
 
 (defn set-value! [id value]
   (swap! state assoc :saved? false)
@@ -101,6 +101,7 @@
    [species-input]
    [culture-input]
    [text-input :description "Description"]
+   [text-input :count "Count"]
    [row "Substrate"
      [:select {:value (get-value :substrate) :key "substrate-select" :on-change #(set-value! :substrate (-> % .-target .-value))}
       [:option {:value "" :key ""} ""]

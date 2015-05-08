@@ -42,5 +42,11 @@ table, th, td {
 }
 
 th, td {
-    padding: 15px;
+  padding: 15px;
+}
+
+div.aggregation-card {
+  border: 1px solid black;
+  padding: 5px;
+  min-height: 200px;
 }

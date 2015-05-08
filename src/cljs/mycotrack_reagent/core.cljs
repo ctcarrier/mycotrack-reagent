@@ -13,7 +13,8 @@
             [mycotrack-reagent.pages.species-list-page :refer [species-list-page refresh-species]]
             [mycotrack-reagent.pages.species-detail-page :refer [species-detail-page refresh-cultures]]
             [mycotrack-reagent.pages.new-project-page :refer [new-project-page]]
-            [mycotrack-reagent.channels :refer [echo-chan]])
+            [mycotrack-reagent.channels :refer [echo-chan]]
+            [mycotrack-reagent.pages.aggregate-page :refer [aggregation-page]])
   (:import goog.History))
 
 ;; -------------------------
@@ -30,11 +31,17 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" []
+(secretary/defroute "/projects" [query-params]
+  (prn query-params)
+  (session/put! :cultureId (:cultureId query-params))
+  (session/put! :containerId (:containerId query-params))
   (session/put! :current-page #'projects-list-page))
 
 (secretary/defroute "/about" []
   (session/put! :current-page #'about-page))
+
+(secretary/defroute "/" []
+  (session/put! :current-page #'aggregation-page))
 
 (secretary/defroute "/species" []
   (session/put! :current-page #'species-list-page))
