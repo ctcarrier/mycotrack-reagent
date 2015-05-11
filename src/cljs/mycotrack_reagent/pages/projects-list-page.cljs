@@ -17,12 +17,13 @@
 
 ;; Init data
 (defn refresh-projects []
+  (.log js/console "yoyo2")
   (prn (str (session/get :cultureId)))
   (prn (str (session/get :containerId)))
-  (prn (str
-    (when (not (clojure.string/blank? (session/get :cultureId))) (str "cultureId=" (session/get :cultureId)))
-    (when (not (clojure.string/blank? (session/get :containerId))) (str "&containerId=" (session/get :containerId)))))
-  (go (let [response (<! (http/get "/api/projects" {:basic-auth {:username "test@mycotrack.com" :password "test"}}))]
+  (go (let [url (str "/api/projects?"
+                  (when (not (clojure.string/blank? (session/get :cultureId))) (str "cultureId=" (session/get :cultureId)))
+                  (when (not (clojure.string/blank? (session/get :containerId))) (str "&containerId=" (session/get :containerId))))
+            response (<! (http/get url {:basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (= (:status response) 200 )
       (reset! projects (:body response))))))
 
@@ -37,7 +38,8 @@
      [:th "Container"]
      [:th "Substrate"]
      [:th "Species"]
-     [:th "Culture"]]
+     [:th "Culture"]
+     [:th "Actions"]]
     (for [project @projects]
      [:tr {:key (:_id project)}
       [:div.col-xs-12
@@ -45,7 +47,8 @@
         [:td (:container project)]
         [:td (:substrate project)]
         [:td (:speciesId project)]
-        [:td (:cultureId project)]]])]]))
+        [:td (:cultureId project)]
+        [:td [:a {:href (str "#/projects/" (:_id project))} "Spawn to new container"]]]])]]))
 
 (defn save-project [value]
   (fn [] (go (let [response (<! (http/post "/api/projects" {:json-params @new-project :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
@@ -62,6 +65,7 @@
         :on-click ( save-project value ) }]]))
 
 (defn projects-list-page []
+  (prn "yoyo1")
   (refresh-projects)
   [:div.col-xs-12
    [:div.col-xs-6 [:h2 "Projects"]]

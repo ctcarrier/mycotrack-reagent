@@ -78,7 +78,8 @@
   (fn [] (go (let [response (<! (http/post "/api/projects" {:json-params (:doc @state) :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (= (:status response) 201 )
       (reset-all)
-      (aset (.-location js/window) "href" "/"))))))
+      (aset (.-location js/window) "hash" "#"))
+    false))))
 
 (defn species-input []
   [:div.form-group

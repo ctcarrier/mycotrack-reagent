@@ -13,6 +13,7 @@
             [mycotrack-reagent.pages.species-list-page :refer [species-list-page refresh-species]]
             [mycotrack-reagent.pages.species-detail-page :refer [species-detail-page refresh-cultures]]
             [mycotrack-reagent.pages.new-project-page :refer [new-project-page]]
+            [mycotrack-reagent.pages.spawn-project-page :refer [spawn-project-page]]
             [mycotrack-reagent.channels :refer [echo-chan]]
             [mycotrack-reagent.pages.aggregate-page :refer [aggregation-page]])
   (:import goog.History))
@@ -30,6 +31,11 @@
 ;; -------------------------
 ;; Routes
 (secretary/set-config! :prefix "#")
+
+(secretary/defroute "/projects/:id" {:as params}
+  (prn (str "Project coming in: " (:id params)))
+  (session/put! :current-project (:id params))
+  (session/put! :current-page #'spawn-project-page))
 
 (secretary/defroute "/projects" [query-params]
   (prn query-params)
@@ -75,8 +81,6 @@
 (defmethod redirect "projects" [params]
  (session/put! :current-page #'projects-list-page))
 
-(refresh-projects)
-(refresh-species)
 (go (redirect (<! echo-chan)))
 
 (defn mount-root []
