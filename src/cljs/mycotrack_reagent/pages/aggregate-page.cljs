@@ -26,7 +26,7 @@
 
 (defn aggregation-list-comp []
   (fn [] [:div.col-xs-12 (for [aggregation @aggregate]
-     [:a {:href (str "#/projects?cultureId=" (:_id (:culture aggregation)) "&containerId=" (:_id (:container aggregation)))} [:div.col-xs-3.aggregation-card
+     [:a {:key (:_id aggregation) :href (str "#/projects?cultureId=" (:_id (:culture aggregation)) "&containerId=" (:_id (:container aggregation)))} [:div.col-xs-3.aggregation-card
       [:div.col-xs-12 (:count aggregation) " " (:name (:container aggregation))]
       [:div.col-xs-12 (:commonName (:species aggregation))]]])]))
 

@@ -61,6 +61,15 @@
        :key id
        :on-change #(set-value! id (-> % .-target .-value))}]])
 
+(defn number-input [id label]
+  [row label
+   [:input
+     {:type "text"
+       :class "form-control"
+       :value (get-value id)
+       :key id
+       :on-change #(set-value! id (js/parseInt (-> % .-target .-value)))}]])
+
 (defn save-project []
   (fn [] (go (let [response (<! (http/post (str "/api/projects/" (:_id @selected-project) "/children") {:json-params (:doc @state) :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (= (:status response) 201 )
@@ -76,7 +85,7 @@
      [:div.col-xs-12
        [:form
        [text-input :description "Description"]
-       [text-input :count "Count"]
+       [number-input :count "Count"]
        [row "Substrate"
          [:select {:value (get-value :substrate) :key "substrate-select" :on-change #(set-value! :substrate (-> % .-target .-value))}
           [:option {:value "" :key ""} ""]

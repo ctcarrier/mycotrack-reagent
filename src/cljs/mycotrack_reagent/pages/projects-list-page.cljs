@@ -18,8 +18,6 @@
 ;; Init data
 (defn refresh-projects []
   (.log js/console "yoyo2")
-  (prn (str (session/get :cultureId)))
-  (prn (str (session/get :containerId)))
   (go (let [url (str "/api/projects?"
                   (when (not (clojure.string/blank? (session/get :cultureId))) (str "cultureId=" (session/get :cultureId)))
                   (when (not (clojure.string/blank? (session/get :containerId))) (str "&containerId=" (session/get :containerId))))
@@ -33,36 +31,27 @@
 (defn project-list []
   (fn [] [:div.col-xs-12
    [:table
-    [:tr
-     [:th "Description"]
-     [:th "Container"]
-     [:th "Substrate"]
-     [:th "Species"]
-     [:th "Culture"]
-     [:th "Actions"]]
-    (for [project @projects]
-     [:tr {:key (:_id project)}
-      [:div.col-xs-12
-        [:td (:description project)]
-        [:td (:container project)]
-        [:td (:substrate project)]
-        [:td (:speciesId project)]
-        [:td (:cultureId project)]
-        [:td [:a {:href (str "#/projects/" (:_id project))} "Spawn to new container"]]]])]]))
-
-(defn save-project [value]
-  (fn [] (go (let [response (<! (http/post "/api/projects" {:json-params @new-project :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
-    (when (= (:status response) 201 )
-      (prn "Project saved")
-      (swap! projects conj (:body response)))))))
-
-(defn new-project-input [value]
-  (fn [] [:div
-   [:input {:type "text"
-           :value (:description @value)
-           :on-change #(swap! value assoc :description (-> % .-target .-value))}]
-   [:input.btn {:type "button" :value "Save"
-        :on-click ( save-project value ) }]]))
+    [:thead
+      [:tr
+       [:th "Description"]
+       [:th "Container"]
+       [:th "Substrate"]
+       [:th "Count"]
+       [:th "Species"]
+       [:th "Culture"]
+       [:th "Actions"]]]
+     [:tbody
+      (for [project @projects]
+       [:tr {:key (:_id project)}
+        [:div.col-xs-12
+          [:td (:description project)]
+          [:td (:container project)]
+          [:td (:substrate project)]
+          [:td (:count project)]
+          [:td (:speciesId project)]
+          [:td (:cultureId project)]
+          [:td [:a {:href (str "#/projects/" (:_id project))} "Spawn to new container"]
+           [:a {:href (str "#/project_location/" (:_id project))} "Move to new location"]]]])]]]))
 
 (defn projects-list-page []
   (prn "yoyo1")

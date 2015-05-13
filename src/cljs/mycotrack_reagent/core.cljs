@@ -15,7 +15,10 @@
             [mycotrack-reagent.pages.new-project-page :refer [new-project-page]]
             [mycotrack-reagent.pages.spawn-project-page :refer [spawn-project-page]]
             [mycotrack-reagent.channels :refer [echo-chan]]
-            [mycotrack-reagent.pages.aggregate-page :refer [aggregation-page]])
+            [mycotrack-reagent.pages.aggregate-page :refer [aggregation-page]]
+            [mycotrack-reagent.pages.locations-list-page :refer [locations-list-page]]
+            [mycotrack-reagent.pages.new-location-page :refer [new-location-page]]
+            [mycotrack-reagent.pages.project-location-page :refer [project-location-page]])
   (:import goog.History))
 
 ;; -------------------------
@@ -43,6 +46,12 @@
   (session/put! :containerId (:containerId query-params))
   (session/put! :current-page #'projects-list-page))
 
+(secretary/defroute "/locations" []
+  (session/put! :current-page #'locations-list-page))
+
+(secretary/defroute "/new_location" []
+  (session/put! :current-page #'new-location-page))
+
 (secretary/defroute "/about" []
   (session/put! :current-page #'about-page))
 
@@ -54,6 +63,10 @@
 
 (secretary/defroute "/new_project" []
   (session/put! :current-page #'new-project-page))
+
+(secretary/defroute "/project_location/:id" {:as params}
+  (session/put! :current-project (:id params))
+  (session/put! :current-page #'project-location-page))
 
 (secretary/defroute "/species/:id" {:as params}
   (prn (str "Species coming in: " (:id params)))
