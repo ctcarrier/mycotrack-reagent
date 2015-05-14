@@ -25,7 +25,13 @@
 ;; Views
 
 (defn location-list []
-  (fn [] [:div.col-xs-12
+  (fn []
+    [:div.col-xs-12
+     [:div.col-xs-6 [:h2 "Locations"]]
+     [:div.col-xs-6 [:a {:href "#/new_location"} "+ New"]]
+     [:div.col-xs-12 [:a {:href "#/about"} "go to about page"]]
+     [:div.col-xs-12 [:a {:href "#/species"} "go to species page"]]
+     [:div.col-xs-12
    [:table
     [:thead
       [:tr
@@ -36,14 +42,8 @@
        [:tr {:key (:_id location)}
         [:div.col-xs-12
           [:td (:name location)]
-          [:td (:createdDate location)]]])]]]))
+          [:td (:createdDate location)]]])]]]]))
 
 (defn locations-list-page []
-  (prn "yoyo1")
   (refresh-locations)
-  [:div.col-xs-12
-   [:div.col-xs-6 [:h2 "Locations"]]
-   [:div.col-xs-6 [:a {:href "#/new_location"} "+ New"]]
-   [:div.col-xs-12 [:a {:href "#/about"} "go to about page"]]
-   [:div.col-xs-12 [:a {:href "#/species"} "go to species page"]]
-   [location-list]])
+   [location-list])

@@ -15,6 +15,9 @@
 (def locations (atom #{}))
 (def selected-project (atom {}))
 
+(defn reset-all []
+  (reset! locations []))
+
 ;; Init data
 (defn refresh-locations []
   (go (let [url "/api/locations"
@@ -28,7 +31,10 @@
       (reset! selected-project (:body response))))))
 
 (defn save-project-location []
-  (prn "This doesn't do anything"))
+  (fn [] (go (let [response (<! (http/post (str "/api/projects/" (:_id @selected-project) "/children") {:json-params @selected-project :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
+    (when (= (:status response) 201 )
+      (reset-all)
+      (aset (.-location js/window) "href" "/"))))))
 
 ;; -------------------------
 ;; Views
@@ -39,17 +45,20 @@
    body])
 
 (defn project-location-input [value]
-  (fn [] [:form
+  (fn []
+    [:div.row
+    [:div.col-xs-12 [:h2 (str "Move Project " (:_id @selected-project))]]
+    [:div.col-xs-12
+     [:form
    [row "Location"
      [:select {:value (:location @selected-project) :key "location-select" :on-change #(swap! selected-project assoc :locationId (-> % .-target .-value))}
       [:option {:value "" :key ""} ""]
       (for [location @locations]
         [:option {:value (:_id location) :key (:_id location)} (:name location)])]]
    [:input.btn {:type "button" :value "Save"
-        :on-click ( save-project-location ) }]]))
+        :on-click ( save-project-location ) }]]]]))
 
 (defn project-location-page []
   (refresh-locations)
   (refresh-project (session/get :current-project))
-  [:div.col-xs-12 [:h2 (str "Move Project " (:_id @selected-project))]]
-  [:div.col-xs-12 [project-location-input]])
+   [project-location-input])
