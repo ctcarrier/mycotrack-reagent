@@ -26,8 +26,8 @@
 ;; Views
 
 (defn species-list-comp []
-  (fn [] [:div (for [species @species-list]
-     [:a {:href (str "#/species/" (:_id species))} [:div.image-tile.col-xs-5
+  (fn [] [:div.col-xs-12.pad-top (for [species @species-list]
+     [:a {:key (:_id species) :href (str "#/species/" (:_id species))} [:div.image-tile.col-xs-5
       [:p (:commonName species)]
       [:p (:scientificName species)]
       [:div {:key (:_id species)}
@@ -57,6 +57,7 @@
         :on-click ( save-species value ) }]]))
 
 (defn species-list-page []
+  (refresh-species)
   [:div [:h2 "Welcome to the Species Page"]
    [:div [:a {:href "#/"} "go to home page"]
    [new-species-input new-species]]

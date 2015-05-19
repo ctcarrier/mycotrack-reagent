@@ -38,7 +38,7 @@
 ;; Views
 
 (defn culture-list-comp []
-  (fn [] [:div.col-xs-12 (for [culture @culture-list]
+  (fn [] [:div.col-xs-12.pad-top (for [culture @culture-list]
      [:a {:href (str "#/cultures/" (:_id culture)) :key (:_id culture)} [:div.image-tile.col-xs-5
       [:p (:name culture)]]])]))
 
@@ -68,4 +68,4 @@
     [:h2 (:commonName @current-species)]
     [:h2 "Cultures" [culture-list-comp]]
     [new-culture-input new-culture]]
-   [:div.col-xs-6 [:img {:src (:imageUrl @current-species)}]]]))
+   [:div.col-xs-6.pad-top [:img {:src (:imageUrl @current-species)}]]]))

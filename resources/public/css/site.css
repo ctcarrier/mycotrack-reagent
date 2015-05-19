@@ -50,3 +50,7 @@ div.aggregation-card {
   padding: 5px;
   min-height: 200px;
 }
+
+.pad-top {
+  padding-top: 10px;
+}

@@ -18,7 +18,7 @@
 
 ;; Init data
 (defn refresh-projects []
-  (go (let [url (str "/api/projects?"
+  (go (let [url (str "/api/extendedProjects?"
                   (when (not (clojure.string/blank? (session/get :cultureId))) (str "cultureId=" (session/get :cultureId)))
                   (when (not (clojure.string/blank? (session/get :containerId))) (str "&containerId=" (session/get :containerId))))
             response (<! (http/get url {:basic-auth {:username "test@mycotrack.com" :password "test"}}))]
@@ -55,7 +55,7 @@
         [:div.col-xs-12
           [:td (:description project)]
           [:td (:name (:substrate project))]
-          [:td (:name (:name (:location project)))]
+          [:td (:name (:location project))]
           [:td (:count project)]
           [:td [:p [:a {:href (str "#/projects/" (:_id project))} "Spawn to new container"]]
            [:p [:a {:href (str "#/project_location/" (:_id project))} "Move to new location"]]]]])]]]]))

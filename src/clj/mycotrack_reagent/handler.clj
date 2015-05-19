@@ -2,9 +2,11 @@
   (:require [compojure.core :refer [GET defroutes]]
             [compojure.route :refer [not-found resources]]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
-            [selmer.parser :refer [render-file]]
+            [hiccup.core :refer [html]]
+            [hiccup.page :refer [include-js include-css]]
             [prone.middleware :refer [wrap-exceptions]]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [selmer.parser :refer [render-file]]))
 
 (defroutes routes
   (GET "/" [] (render-file "templates/index.html" {:dev (env :dev?)}))
@@ -13,4 +15,4 @@
 
 (def app
   (let [handler (wrap-defaults routes site-defaults)]
-    (if (env :dev?) (wrap-exceptions handler) handler)))
+    (if (env :dev) (wrap-exceptions handler) handler)))

@@ -18,6 +18,15 @@
 (defn reset-all []
   (reset! locations []))
 
+(defn find-first
+         [f coll]
+         (first (filter f coll)))
+
+(defn find-location
+  [id]
+  (prn (str "Finding " id " in " (:_id (@locations 0))))
+  (find-first #(= (:_id %) id) @locations))
+
 ;; Init data
 (defn refresh-locations []
   (go (let [url "/api/locations"
@@ -26,15 +35,15 @@
       (reset! locations (:body response))))))
 
 (defn refresh-project [projectId]
-  (go (let [response (<! (http/get (str "/api/projects/" projectId) {:basic-auth {:username "test@mycotrack.com" :password "test"}}))]
+  (go (let [response (<! (http/get (str "/api/extendedProjects/" projectId) {:basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (and (= (:status response) 200 ) (seq (:body response)))
       (reset! selected-project (:body response))))))
 
 (defn save-project-location []
-  (fn [] (go (let [response (<! (http/post (str "/api/projects/" (:_id @selected-project) "/children") {:json-params @selected-project :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
+  (fn [] (go (let [response (<! (http/post (str "/api/extendedProjects/" (:_id @selected-project) "/children") {:json-params @selected-project :basic-auth {:username "test@mycotrack.com" :password "test"}}))]
     (when (= (:status response) 201 )
       (reset-all)
-      (aset (.-location js/window) "href" "/"))))))
+      (aset (.-location js/window) "hash" "#"))))))
 
 ;; -------------------------
 ;; Views
@@ -51,7 +60,7 @@
     [:div.col-xs-12
      [:form
    [row "Location"
-     [:select {:value (:location @selected-project) :key "location-select" :on-change #(swap! selected-project assoc :locationId (-> % .-target .-value))}
+     [:select {:value (:_id (:location @selected-project)) :key "location-select" :on-change #(swap! selected-project assoc :location (find-location (-> % .-target .-value)))}
       [:option {:value "" :key ""} ""]
       (for [location @locations]
         [:option {:value (:_id location) :key (:_id location)} (:name location)])]]
